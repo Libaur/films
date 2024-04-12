@@ -1,4 +1,4 @@
-interface Film {
+export interface Film {
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];
@@ -15,14 +15,7 @@ interface Film {
   vote_count: number;
 }
 
-type Genre = {
+export type Genre = {
   id: number;
   name: string;
 };
-
-type Option = {
-  value: number;
-  text: string;
-};
-
-export { type Film, type Genre, type Option };

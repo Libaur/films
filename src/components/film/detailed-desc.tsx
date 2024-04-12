@@ -4,7 +4,6 @@ import { DetailedFilm } from 'src/app/pages/film/interfaces';
 import { formattingDate } from 'src/utils';
 
 export default function DetailedDescriptor({ data }: { data: DetailedFilm }) {
-  const main = '#637878';
   const descItems = [
     { title: 'Дата релиза:', description: `${formattingDate(data.release_date)}` },
     { title: 'Время просмотра:', description: `${data.runtime?.toString()}` },
@@ -25,7 +24,7 @@ export default function DetailedDescriptor({ data }: { data: DetailedFilm }) {
 
   return descItems.map(item => (
     <Typography key={item.title} variant="subtitle1" component="p" pb={0.5}>
-      <b color={main}>{item.title}</b> {item.description}
+      <b>{item.title}</b> {item.description}
     </Typography>
   ));
 }

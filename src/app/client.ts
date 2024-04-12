@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
 
 const baseUrl = process.env.BASE_URL;
@@ -17,6 +18,9 @@ const getRequest = async (url: string) => {
     const response = await axios.get(url, options);
     return response.data;
   } catch (error) {
+    toast.error(
+      'К сожалению, произошла ошибка при загрузке данных. Попробуйте проверить соединение и повторить позднее.'
+    );
     console.error(error);
     return [];
   }
@@ -35,6 +39,9 @@ const postRequest = async (id: number, favorite: boolean) => {
     const response = await axios.post(url, body, options);
     return response.status;
   } catch (error) {
+    toast.error(
+      'К сожалению, произошла ошибка при обновлении данных. Попробуйте проверить соединение и повторить позднее.'
+    );
     console.error(error);
   }
 };

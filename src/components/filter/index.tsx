@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
@@ -7,12 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { DrawerHeader, filtersDrawerStyle, paginationStyle } from '../../app/style/shared-styled';
 import { useTheme } from '@mui/material/styles';
-import { AppDispatch, AppState, filtersReset, pageSelected } from 'src/app/context';
+import { useAppState, useAppDispatch, pageSelected, filtersReset } from 'src/app/context';
 import { fetchSearchedFilm } from 'src/app/context/slices/filter/requests';
 import { useDebounce } from 'src/utils';
-import { DrawerHeader, filtersDrawerStyle, paginationStyle } from '../../app/style/shared-styled';
-import { useDispatch, useSelector } from 'react-redux';
 
 interface Filter {
   isFilterOpen: boolean;
@@ -25,8 +25,8 @@ export default function Filter({ isFilterOpen, handleFilterClose, children }: Fi
   const debouncedQuery = useDebounce(query);
 
   const theme = useTheme();
-  const currentPage = useSelector((state: AppState) => state.filter.page);
-  const dispatch = useDispatch<AppDispatch>();
+  const { page: currentPage, error } = useAppState(state => state.filter);
+  const dispatch = useAppDispatch();
 
   const resetFilters = () => {
     dispatch(filtersReset());
@@ -37,6 +37,8 @@ export default function Filter({ isFilterOpen, handleFilterClose, children }: Fi
     if (debouncedQuery.length)
       dispatch(fetchSearchedFilm({ query: debouncedQuery, page: currentPage }));
   }, [debouncedQuery, currentPage]);
+
+  if (error) toast.error(error);
 
   return (
     <Drawer sx={filtersDrawerStyle} variant="persistent" anchor="left" open={isFilterOpen}>

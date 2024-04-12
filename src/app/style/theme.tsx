@@ -8,7 +8,7 @@ body {
   background-color: #EDDEDE
 }`;
 
-const theme = createTheme({
+export const theme = createTheme({
   palette: {
     primary: {
       main: '#637878',

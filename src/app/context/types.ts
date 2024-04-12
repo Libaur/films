@@ -26,7 +26,13 @@ export type FilterData = {
   rated: Film[];
 };
 
+export type SelectData = {
+  value: number;
+  text: string;
+};
+
 export type FilterState = {
+  selectData: SelectData[];
   option: number;
   years: number[];
   byYearsSorted: Film[];

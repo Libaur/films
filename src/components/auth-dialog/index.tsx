@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { AuthDialogProps } from './interfaces';
-import { AppState, AppDispatch } from 'src/app/context';
+import { useAppState, useAppDispatch } from 'src/app/context';
 import { fetchAccountData } from 'src/app/context/slices/user';
 import { emailPattern, jwtPattern } from 'src/utils';
 
@@ -22,9 +22,9 @@ export default function AuthDialog({
   const [validUserData, setValidUserData] = useState('');
   const { title, label, buttonText, type } = content;
 
-  const userId = useSelector((state: AppState) => state.user.id);
+  const { id: userId, error } = useAppState(state => state.user);
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const validEmail = type === 'email' && emailPattern.test(userData);
   const validToken = type === 'text' && jwtPattern.test(userData);
@@ -69,6 +69,8 @@ export default function AuthDialog({
     }
     handleModalClose();
   };
+
+  if (error) toast.error(error);
 
   return (
     <Dialog

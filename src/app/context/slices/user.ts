@@ -15,24 +15,45 @@ const userInitialState: UserState = {
 
 const baseUrl = process.env.BASE_URL;
 
-export const fetchAccountData = createAsyncThunk('user/fetchAccountData', async () => {
-  const accountData: User = await getRequest(`${baseUrl}account/account_id`);
-  return accountData.id;
+export const fetchAccountData = createAsyncThunk<
+  number,
+  void,
+  {
+    rejectValue: string;
+  }
+>('user/fetchAccountData', async (_, thunkAPI) => {
+  try {
+    const accountData: User = await getRequest(`${baseUrl}account/account_id`);
+    return accountData.id;
+  } catch (error) {
+    return thunkAPI.rejectWithValue('Ошибка при получении данных аккаунта');
+  }
 });
 
-export const fetchFavoritesList = createAsyncThunk<Film[], { id: string | number | undefined }>(
-  'user/fetchFavoritesList',
-  async ({ id }) => {
+export const fetchFavoritesList = createAsyncThunk<
+  Film[],
+  { id: string | number | undefined },
+  { rejectValue: string }
+>('user/fetchFavoritesList', async ({ id }, { rejectWithValue }) => {
+  try {
     const favoritesData = await getRequest(`${baseUrl}account/${id}/favorite/movies`);
     return favoritesData.results;
+  } catch (error) {
+    return rejectWithValue('Ошибка при загрузке списка избранных фильмов');
   }
-);
+});
 
 export const updateFavoritesList = createAsyncThunk<
-  Promise<number | undefined>,
-  { id: number; favorite: boolean }
->('user/updateFavoritesList', async ({ id, favorite }) => {
-  return await postRequest(id, favorite);
+  number | undefined,
+  { id: number; favorite: boolean },
+  { rejectValue: string }
+>('user/updateFavoritesList', async ({ id, favorite }, thunkAPI) => {
+  try {
+    const response = await postRequest(id, favorite);
+    if (typeof response === 'number') return response;
+  } catch (error) {
+    return thunkAPI.rejectWithValue('Ошибка при обновлении списка избранных фильмов');
+  }
 });
 
 export const userSlice = createSlice({

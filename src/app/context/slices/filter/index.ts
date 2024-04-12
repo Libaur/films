@@ -9,6 +9,16 @@ import { Genre, Film } from 'src/app/shared-contracts';
 import { FilterState } from '../../types';
 
 const filterInitialState: FilterState = {
+  selectData: [
+    {
+      value: 1,
+      text: 'Популярности',
+    },
+    {
+      value: 2,
+      text: 'Высокий рейтинг',
+    },
+  ],
   option: 1,
   years: [2024, 2024],
   byYearsSorted: [],

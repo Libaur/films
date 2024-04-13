@@ -1,6 +1,6 @@
 <div align="center">Приложение корректно работает только через vpn в связи с ограничениями API.</div>
 <div align="center">
-  <a href="https://films-beta.netlify.app/" target="_blank">Deploy</a>
+  <a href="https://finally-films.netlify.app/" target="_blank">Deploy</a>
 </div>
 
 <div align="center">

@@ -15,5 +15,9 @@ export const ShortDescription = memo(function PreviewDescription({
   children,
   props,
 }: ShortDescription) {
-  return <Typography {...props}>{children}</Typography>;
+  return (
+    <Typography color={'background.default'} {...props}>
+      {children}
+    </Typography>
+  );
 });

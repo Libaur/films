@@ -11,7 +11,7 @@ interface Header {
   isFilterOpen: boolean;
   handleFilterOpen: () => void;
   handleModalOpen: () => void;
-  auth: number | undefined;
+  auth: number | null;
 }
 
 export default function Header({ isFilterOpen, handleFilterOpen, handleModalOpen, auth }: Header) {

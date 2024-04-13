@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
@@ -25,7 +24,7 @@ export default function Filter({ isFilterOpen, handleFilterClose, children }: Fi
   const debouncedQuery = useDebounce(query);
 
   const theme = useTheme();
-  const { page: currentPage, error } = useAppState(state => state.filter);
+  const { page: currentPage } = useAppState(state => state.filter);
   const dispatch = useAppDispatch();
 
   const resetFilters = () => {
@@ -37,8 +36,6 @@ export default function Filter({ isFilterOpen, handleFilterClose, children }: Fi
     if (debouncedQuery.length)
       dispatch(fetchSearchedFilm({ query: debouncedQuery, page: currentPage }));
   }, [debouncedQuery, currentPage]);
-
-  if (error) toast.error(error);
 
   return (
     <Drawer sx={filtersDrawerStyle} variant="persistent" anchor="left" open={isFilterOpen}>

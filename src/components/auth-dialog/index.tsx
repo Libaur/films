@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -22,12 +21,13 @@ export default function AuthDialog({
   const [validUserData, setValidUserData] = useState('');
   const { title, label, buttonText, type } = content;
 
-  const { id: userId, error } = useAppState(state => state.user);
+  const { id: userId } = useAppState(state => state.user);
 
   const dispatch = useAppDispatch();
 
   const validEmail = type === 'email' && emailPattern.test(userData);
   const validToken = type === 'text' && jwtPattern.test(userData);
+  const userLoggedIn = Cookies.get('token') && !isModalOpen;
 
   useEffect(() => {
     if (validToken) {
@@ -41,18 +41,17 @@ export default function AuthDialog({
   }, [userData]);
 
   useEffect(() => {
-    if (Cookies.get('token')) dispatch(fetchAccountData());
-  }, [validUserData]);
-
-  useEffect(() => {
+    if (userLoggedIn) {
+      dispatch(fetchAccountData());
+    }
     if (userId) {
-      Cookies.set('userId', userId.toString(), {
+      Cookies.set('userId', `${userId}`, {
         expires: 7,
         sameSite: 'strict',
         secure: true,
       });
     }
-  }, [userId]);
+  }, [validUserData, userId]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(e.currentTarget);
@@ -69,8 +68,6 @@ export default function AuthDialog({
     }
     handleModalClose();
   };
-
-  if (error) toast.error(error);
 
   return (
     <Dialog

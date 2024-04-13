@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Element, animateScroll as move, scroller as revert } from 'react-scroll';
 import Box from '@mui/material/Box';
@@ -34,7 +34,11 @@ export default memo(function Gallery() {
     genres: genres,
   });
 
-  revert.scrollTo(lastFilmClicked, { offset: -150 });
+  useEffect(() => {
+    if (lastFilmClicked) {
+      revert.scrollTo(lastFilmClicked, { offset: -150 });
+    }
+  }, [lastFilmClicked]);
 
   const imgUrl = process.env.IMG_URL;
 
@@ -56,12 +60,14 @@ export default memo(function Gallery() {
           return (
             <Paper
               key={id}
-              elevation={2}
+              elevation={4}
               sx={{
                 transition: 'transform 0.3s ease-in-out',
                 '&:hover': {
                   transform: 'scale(1.02)',
+                  backgroundColor: 'supplement.main',
                 },
+                backgroundColor: 'primary.main',
               }}
             >
               <Link to={`films/${id}`}>

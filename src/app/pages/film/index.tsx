@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { useLoaderData, Link } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import Cookies from 'js-cookie';
 import {
   Box,
   Card,
@@ -20,7 +18,7 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarIcon from '@mui/icons-material/Star';
 import DetailedDescriptor from 'src/components/film/detailed-desc';
 import { AppBar } from 'src/app/style/shared-styled';
-import { styles, theme, Theme } from 'src/app/style/theme';
+import { styles, Theme } from 'src/app/style/theme';
 import { useAppState, useAppDispatch, favoritesCached, favoritesUpdated } from '../../context';
 import { fetchFavoritesList, updateFavoritesList } from 'src/app/context/slices/user';
 import { DetailedFilm } from './interfaces';
@@ -29,12 +27,7 @@ import { checkStatus } from 'src/utils';
 export default function FilmPage() {
   const imgUrl = process.env.IMG_URL;
 
-  const {
-    favoritesCache,
-    favoritesData,
-    updated: statusCode,
-    error,
-  } = useAppState(state => state.user);
+  const { favoritesCache, favoritesData, updated: statusCode } = useAppState(state => state.user);
 
   const dispatch = useAppDispatch();
   const filmData = useLoaderData() as DetailedFilm;
@@ -42,8 +35,9 @@ export default function FilmPage() {
   const currentId = filmData.id;
   const foundFilm = favoritesCache.find(id => id === currentId);
 
-  const stateId = useAppState(state => state.user.id);
-  const userId = stateId ?? Cookies.get('userId');
+  const userId = useAppState(state => state.user.id);
+
+  const serverReturnedError = statusCode && !checkStatus(statusCode);
 
   useEffect(() => {
     dispatch(fetchFavoritesList({ id: userId }));
@@ -59,16 +53,14 @@ export default function FilmPage() {
     if (foundFilm) {
       toggleOff();
       dispatch(updateFavoritesList({ id: currentId, favorite: false }));
-      if (statusCode && !checkStatus(statusCode)) toggleOn();
+      if (serverReturnedError) toggleOn();
     }
     if (!foundFilm) {
       toggleOn();
       dispatch(updateFavoritesList({ id: currentId, favorite: true }));
-      if (statusCode && !checkStatus(statusCode)) toggleOff();
+      if (serverReturnedError) toggleOff();
     }
   };
-
-  if (error) toast.error(error);
 
   return (
     <React.Fragment>
@@ -97,13 +89,17 @@ export default function FilmPage() {
               <Typography gutterBottom variant="h4" component="h4" pb={2} color={'primary.main'}>
                 {filmData.title}
               </Typography>
-              <Card style={{ color: theme.palette.supplement.main }}>
-                {filmData.vote_average.toFixed(1)}
-              </Card>
+              <Card style={{ color: 'supplement.main' }}>{filmData.vote_average.toFixed(1)}</Card>
               <CardActions sx={{ pb: 2 }}>
-                <IconButton aria-label="add to favorites" onClick={handleToggleFavorites}>
-                  {foundFilm ? <StarIcon /> : <StarOutlineIcon />}
-                </IconButton>
+                {serverReturnedError ? (
+                  <Card style={{ backgroundColor: 'supplement.main', color: 'white' }}>
+                    Произошла ошибка при обновлении данных. Попробуйте повторить позднее.
+                  </Card>
+                ) : (
+                  <IconButton aria-label="add to favorites" onClick={handleToggleFavorites}>
+                    {foundFilm ? <StarIcon /> : <StarOutlineIcon />}
+                  </IconButton>
+                )}
               </CardActions>
             </Stack>
             <Typography variant="body1" component="p" fontSize={15} fontStyle={'oblique'} pb={2}>

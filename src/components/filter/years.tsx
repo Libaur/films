@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { toast } from 'react-hot-toast';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { useAppState, useAppDispatch, yearsSelected } from 'src/app/context';
@@ -8,7 +7,7 @@ import { useDebounce } from 'src/utils';
 
 export default function Years() {
   const dispatch = useAppDispatch();
-  const { page: currentPage, years: currentYears, error } = useAppState(state => state.filter);
+  const { page: currentPage, years: currentYears } = useAppState(state => state.filter);
   const smallerYear = useDebounce(currentYears[0].toString());
   const largerYear = useDebounce(currentYears[1].toString());
 
@@ -25,8 +24,6 @@ export default function Years() {
   }, [smallerYear, largerYear, currentPage]);
 
   const valuetext = (value: number) => `${value}`;
-
-  if (error) toast.error(error);
 
   return (
     <Box pl={3.5} pr={3.5} pt={6.5} pb={2.5}>

@@ -32,7 +32,7 @@ export const fetchAccountData = createAsyncThunk<
 
 export const fetchFavoritesList = createAsyncThunk<
   Film[],
-  { id: string | number | undefined },
+  { id: string | number | null },
   { rejectValue: string }
 >('user/fetchFavoritesList', async ({ id }, { rejectWithValue }) => {
   try {

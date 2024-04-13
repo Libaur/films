@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { toast } from 'react-hot-toast';
 import { useAppState, useAppDispatch, genresSelected } from 'src/app/context';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -7,15 +6,13 @@ import { fetchSortedByGenresFilms } from 'src/app/context/slices/filter/requests
 
 export default function Genres() {
   const dispatch = useAppDispatch();
-  const { page: currentPage, genres, genresData, error } = useAppState(state => state.filter);
+  const { page: currentPage, genres, genresData } = useAppState(state => state.filter);
   const genresIDs = genres.map(genre => genre.id).join(', ');
 
   useEffect(() => {
     if (genresIDs.length)
       dispatch(fetchSortedByGenresFilms({ value: genresIDs, page: currentPage }));
   }, [genresIDs, currentPage]);
-
-  if (error) toast.error(error);
 
   return (
     <Autocomplete

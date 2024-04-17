@@ -1,6 +1,5 @@
 import { styled } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Dialog from '@mui/material/Dialog';
 
 const drawerWidth = 240;
 
@@ -52,41 +51,44 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-const filtersDrawerStyle = {
-  width: drawerWidth,
-  flexShrink: 0,
-  '& .MuiDrawer-paper': {
+const filterStyle = {
+  drawer: {
     width: drawerWidth,
-    boxSizing: 'border-box',
-    bgcolor: 'secondary.main',
+    flexShrink: 0,
+    '& .MuiDrawer-paper': {
+      width: drawerWidth,
+      boxSizing: 'border-box',
+      bgcolor: 'secondary.main',
+    },
+  },
+  pagination: {
+    pl: 2,
+    pr: 2,
+    pb: 1.5,
+    pt: 1.5,
+    '& .MuiPaginationItem-root.Mui-selected': {
+      backgroundColor: 'supplement.main',
+    },
   },
 };
 
-const paginationStyle = {
-  pl: 2,
-  pr: 2,
-  pb: 1.5,
-  pt: 1.5,
-  '& .MuiPaginationItem-root.Mui-selected': {
-    backgroundColor: 'supplement.main',
+const filmStyle = {
+  box: {
+    '& > :not(style)': {
+      m: 1,
+      width: 240,
+      height: 360,
+    },
+  },
+  paper: {
+    position: 'relative',
+    transition: 'transform 0.3s ease-in-out',
+    '&:hover': {
+      transform: 'scale(1.02)',
+      backgroundColor: 'supplement.main',
+    },
+    backgroundColor: 'primary.main',
   },
 };
 
-const GandalfDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
-  },
-}));
-
-export {
-  Main,
-  AppBar,
-  DrawerHeader,
-  filtersDrawerStyle,
-  drawerWidth,
-  paginationStyle,
-  GandalfDialog,
-};
+export { Main, AppBar, DrawerHeader, filterStyle, filmStyle };

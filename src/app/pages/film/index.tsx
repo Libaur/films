@@ -14,8 +14,8 @@ import {
 import Toolbar from '@mui/material/Toolbar';
 import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
-import StarIcon from '@mui/icons-material/Star';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import DetailedDescriptor from 'src/components/film/detailed-desc';
 import { AppBar } from 'src/app/style/shared-styled';
 import { styles, Theme } from 'src/app/style/theme';
@@ -32,8 +32,8 @@ export default function FilmPage() {
   const dispatch = useAppDispatch();
   const filmData = useLoaderData() as DetailedFilm;
 
-  const currentId = filmData.id;
-  const foundFilm = favoritesCache.find(id => id === currentId);
+  const filmId = filmData.id;
+  const isFilmOnFavorites = favoritesCache.find(id => id === filmId);
 
   const userId = useAppState(state => state.user.id);
 
@@ -48,16 +48,16 @@ export default function FilmPage() {
   }, [favoritesData]);
 
   const handleToggleFavorites = () => {
-    const toggleOn = () => dispatch(favoritesUpdated({ id: currentId, add: true }));
-    const toggleOff = () => dispatch(favoritesUpdated({ id: currentId, add: false }));
-    if (foundFilm) {
+    const toggleOn = () => dispatch(favoritesUpdated({ id: filmId, add: true }));
+    const toggleOff = () => dispatch(favoritesUpdated({ id: filmId, add: false }));
+    if (isFilmOnFavorites) {
       toggleOff();
-      dispatch(updateFavoritesList({ id: currentId, favorite: false }));
+      dispatch(updateFavoritesList({ id: filmId, favorite: false }));
       if (serverReturnedError) toggleOn();
     }
-    if (!foundFilm) {
+    if (!isFilmOnFavorites) {
       toggleOn();
-      dispatch(updateFavoritesList({ id: currentId, favorite: true }));
+      dispatch(updateFavoritesList({ id: filmId, favorite: true }));
       if (serverReturnedError) toggleOff();
     }
   };
@@ -97,7 +97,11 @@ export default function FilmPage() {
                   </Card>
                 ) : (
                   <IconButton aria-label="add to favorites" onClick={handleToggleFavorites}>
-                    {foundFilm ? <StarIcon /> : <StarOutlineIcon />}
+                    {isFilmOnFavorites ? (
+                      <FavoriteOutlinedIcon sx={{ color: 'supplement.main' }} />
+                    ) : (
+                      <FavoriteBorderOutlinedIcon sx={{ color: 'supplement.main' }} />
+                    )}
                   </IconButton>
                 )}
               </CardActions>

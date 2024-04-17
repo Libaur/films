@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { DrawerHeader, filtersDrawerStyle, paginationStyle } from '../../app/style/shared-styled';
+import { DrawerHeader, filterStyle } from '../../app/style/shared-styled';
 import { useTheme } from '@mui/material/styles';
 import { useAppState, useAppDispatch, pageSelected, filtersReset } from 'src/app/context';
 import { fetchSearchedFilm } from 'src/app/context/slices/filter/requests';
@@ -38,7 +38,7 @@ export default function Filter({ isFilterOpen, handleFilterClose, children }: Fi
   }, [debouncedQuery, currentPage]);
 
   return (
-    <Drawer sx={filtersDrawerStyle} variant="persistent" anchor="left" open={isFilterOpen}>
+    <Drawer sx={filterStyle.drawer} variant="persistent" anchor="left" open={isFilterOpen}>
       <DrawerHeader>
         <Button
           onClick={resetFilters}
@@ -69,7 +69,7 @@ export default function Filter({ isFilterOpen, handleFilterClose, children }: Fi
         onChange={(event: React.ChangeEvent<unknown>, value: number) =>
           dispatch(pageSelected(value))
         }
-        sx={paginationStyle}
+        sx={filterStyle.pagination}
       />
     </Drawer>
   );

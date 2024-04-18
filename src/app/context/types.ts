@@ -2,10 +2,16 @@ import { Film, Genre } from 'src/app/shared-contracts';
 
 type Conditions = 'idle' | 'loading' | 'succeeded' | 'failed';
 
+export type Rated = {
+  id: number;
+  grade: number | null;
+};
+
 export type UserState = {
   id: number | null;
   favoritesCache: number[];
   favoritesData: Film[];
+  rated: Rated[];
   updated: number | null;
   status: Conditions;
   error: string | null;

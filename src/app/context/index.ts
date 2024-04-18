@@ -25,7 +25,7 @@ export const useAppState: TypedUseSelectorHook<AppState> = useSelector;
 export const useAppDispatch: () => AppDispatch = useDispatch;
 
 export const { userNavigatedToFilm } = navigateSlice.actions;
-export const { IDSetted, favoritesCached, favoritesUpdated } = userSlice.actions;
+export const { IDSetted, favoritesCached, favoritesUpdated, ratedUpdated } = userSlice.actions;
 export const {
   genresSelected,
   optionSelected,

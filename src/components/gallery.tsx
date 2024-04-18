@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import EastIcon from '@mui/icons-material/East';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FilmRating from './rating';
 import { Preview } from './film/preview';
 import { ShortDescription } from './film/short-desc';
 import {
@@ -45,7 +46,12 @@ export default memo(function Gallery() {
     genres: genres,
   });
 
-  const { id: userId, favoritesData, favoritesCache } = useAppState(state => state.user);
+  const {
+    id: userId,
+    favoritesData,
+    favoritesCache,
+    rated: ratedFilms,
+  } = useAppState(state => state.user);
 
   useEffect(() => {
     dispatch(fetchFavoritesList({ id: userId }));
@@ -66,6 +72,7 @@ export default memo(function Gallery() {
       <Box display="flex" flexWrap="wrap" sx={filmStyle.box}>
         {displayedContent.map(movie => {
           const { id, title, poster_path, vote_average } = movie;
+          const currentRating = ratedFilms.find(film => film.id === id)?.grade;
           return (
             <Paper key={id} elevation={4} sx={filmStyle.paper}>
               <Link to={`films/${id}`}>
@@ -85,6 +92,13 @@ export default memo(function Gallery() {
                   <ShortDescription props={{ pl: 1, pt: 0.5, fontSize: 11 }}>
                     Рейтинг: {vote_average.toFixed(1)}
                   </ShortDescription>
+                </Stack>
+                <Stack justifyContent={'center'} p={1}>
+                  <FilmRating
+                    size="small"
+                    starsCount={currentRating ? currentRating : null}
+                    disabled={true}
+                  />
                 </Stack>
               </Stack>
               <Stack alignItems="end" sx={{ position: 'absolute', top: 5, right: 5 }}>

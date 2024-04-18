@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { UserState, FavoritesUpdatePayload } from '../types';
+import { UserState, FavoritesUpdatePayload, Rated } from '../types';
 import { User } from 'src/components/auth-dialog/interfaces';
 import { Film } from 'src/app/shared-contracts';
 import { getRequest, postRequest } from 'src/app/client';
@@ -8,6 +8,7 @@ const userInitialState: UserState = {
   id: null,
   favoritesCache: [],
   favoritesData: [],
+  rated: localStorage.getItem('rated') ? JSON.parse(localStorage.getItem('rated') as string) : [],
   updated: null,
   status: 'idle',
   error: null,
@@ -71,6 +72,15 @@ export const userSlice = createSlice({
       add
         ? state.favoritesCache.push(id)
         : (state.favoritesCache = state.favoritesCache.filter(cachedId => cachedId !== id));
+    },
+    ratedUpdated(state, action: PayloadAction<Rated>) {
+      const existingFilmIndex = state.rated.findIndex(film => film.id === action.payload.id);
+      if (existingFilmIndex !== -1) {
+        state.rated[existingFilmIndex] = action.payload;
+      } else {
+        state.rated.push(action.payload);
+      }
+      localStorage.setItem('rated', JSON.stringify(state.rated));
     },
   },
   extraReducers: builder => {

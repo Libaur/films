@@ -17,9 +17,16 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import DetailedDescriptor from 'src/components/film/detailed-desc';
+import FilmRating from 'src/components/rating';
 import { AppBar } from 'src/app/style/shared-styled';
 import { styles, Theme } from 'src/app/style/theme';
-import { useAppState, useAppDispatch, favoritesCached, favoritesUpdated } from '../../context';
+import {
+  useAppState,
+  useAppDispatch,
+  favoritesCached,
+  favoritesUpdated,
+  ratedUpdated,
+} from '../../context';
 import { fetchFavoritesList, updateFavoritesList } from 'src/app/context/slices/user';
 import { DetailedFilm } from './interfaces';
 import { checkStatus } from 'src/utils';
@@ -27,16 +34,19 @@ import { checkStatus } from 'src/utils';
 export default function FilmPage() {
   const imgUrl = process.env.IMG_URL;
 
-  const { favoritesCache, favoritesData, updated: statusCode } = useAppState(state => state.user);
+  const {
+    favoritesCache,
+    favoritesData,
+    rated,
+    updated: statusCode,
+  } = useAppState(state => state.user);
 
   const dispatch = useAppDispatch();
   const filmData = useLoaderData() as DetailedFilm;
-
-  const filmId = filmData.id;
-  const isFilmOnFavorites = favoritesCache.find(id => id === filmId);
-
   const userId = useAppState(state => state.user.id);
 
+  const isFilmOnFavorites = favoritesCache.find(id => id === filmData.id);
+  const currentRating = rated.find(film => film.id === filmData.id)?.grade;
   const serverReturnedError = statusCode && !checkStatus(statusCode);
 
   useEffect(() => {
@@ -48,16 +58,16 @@ export default function FilmPage() {
   }, [favoritesData]);
 
   const handleToggleFavorites = () => {
-    const toggleOn = () => dispatch(favoritesUpdated({ id: filmId, add: true }));
-    const toggleOff = () => dispatch(favoritesUpdated({ id: filmId, add: false }));
+    const toggleOn = () => dispatch(favoritesUpdated({ id: filmData.id, add: true }));
+    const toggleOff = () => dispatch(favoritesUpdated({ id: filmData.id, add: false }));
     if (isFilmOnFavorites) {
       toggleOff();
-      dispatch(updateFavoritesList({ id: filmId, favorite: false }));
+      dispatch(updateFavoritesList({ id: filmData.id, favorite: false }));
       if (serverReturnedError) toggleOn();
     }
     if (!isFilmOnFavorites) {
       toggleOn();
-      dispatch(updateFavoritesList({ id: filmId, favorite: true }));
+      dispatch(updateFavoritesList({ id: filmData.id, favorite: true }));
       if (serverReturnedError) toggleOff();
     }
   };
@@ -104,6 +114,14 @@ export default function FilmPage() {
                     )}
                   </IconButton>
                 )}
+                <FilmRating
+                  size="medium"
+                  starsCount={currentRating ? currentRating : null}
+                  disabled={false}
+                  handleChange={currentGrade => {
+                    dispatch(ratedUpdated({ id: filmData.id, grade: currentGrade }));
+                  }}
+                />
               </CardActions>
             </Stack>
             <Typography variant="body1" component="p" fontSize={15} fontStyle={'oblique'} pb={2}>

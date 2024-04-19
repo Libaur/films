@@ -53,6 +53,11 @@ export default memo(function Gallery() {
     rated: ratedFilms,
   } = useAppState(state => state.user);
 
+  const handlePageTurn = () => {
+    dispatch(pageSelected(page + 1));
+    move.scrollToTop();
+  };
+
   useEffect(() => {
     dispatch(fetchFavoritesList({ id: userId }));
   }, []);
@@ -114,7 +119,7 @@ export default memo(function Gallery() {
       </Box>
       <Stack display="flex" flexDirection="row" justifyContent="space-between">
         <Button onClick={move.scrollToTop}>Наверх</Button>
-        <IconButton color="primary" onClick={() => dispatch(pageSelected(page + 1))}>
+        <IconButton color="primary" onClick={handlePageTurn}>
           <EastIcon />
         </IconButton>
       </Stack>
